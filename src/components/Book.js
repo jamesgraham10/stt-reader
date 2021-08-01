@@ -94,7 +94,7 @@ export default function Book({
           // setBookCache("currentChapterTitle", currentChapterTitle);
           setCurrentChapterTitle(getCurrentChapter(e));
           setBookCache("lastFragScrolled", closestFragmentId);
-          setBeyondCover(e.target.scrollTop > coverPxEnd);
+          setBeyondCover(e.target.scrollTop > 50);
 
           const VISIBLE_END_PX =
             currScrollTop - coverPxEnd + e.target.clientHeight;
