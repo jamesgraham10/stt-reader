@@ -39,7 +39,7 @@ const getCurrentChapter = (e) => {
   );
   const currentChapter = getClosestChapter(
     chapters,
-    e.target.scrollTop + e.target.clientHeight - 200
+    e.target.scrollTop + e.target.clientHeight
   );
 
   return currentChapter.title;
@@ -56,7 +56,11 @@ export default function Book({
   const [prevScrollTop, setPrevScrollTop] = useState(0);
   const [beyondCover, setBeyondCover] = useState(false);
   const [hideBookHeader, setHideBookHeader] = useState(false);
+  const [blockMainScrollFn, setBlockMainScrollFn] = useState(false);
   const [percentRead, setPercentRead] = useState(0);
+  const [chapterList, setChapterList] = useState(
+    fragments.filter((f) => f.type === "CHAPTER")
+  );
   const [currentChapterTitle, setCurrentChapterTitle] = useState("");
 
   useEffect(() => {
@@ -81,29 +85,34 @@ export default function Book({
       id="book"
       className="overflow-scroll max-h-screen"
       onScroll={debounce((e) => {
-        const currScrollTop = e.target.scrollTop;
-        const closestFragmentId = getClosestScrolledFragment(e);
-        // TODO - don't think we need to cache this chapter title, as we recalculate on scroll
-        // setBookCache("currentChapterTitle", currentChapterTitle);
-        setCurrentChapterTitle(getCurrentChapter(e));
-        setBookCache("lastFragScrolled", closestFragmentId);
-        setBeyondCover(e.target.scrollTop > coverPxEnd);
+        if (!blockMainScrollFn) {
+          const currScrollTop = e.target.scrollTop;
+          const closestFragmentId = getClosestScrolledFragment(e);
+          // TODO - don't think we need to cache this chapter title, as we recalculate on scroll
+          // setBookCache("currentChapterTitle", currentChapterTitle);
+          setCurrentChapterTitle(getCurrentChapter(e));
+          setBookCache("lastFragScrolled", closestFragmentId);
+          setBeyondCover(e.target.scrollTop > coverPxEnd);
 
-        const VISIBLE_END_PX =
-          currScrollTop - coverPxEnd + e.target.clientHeight;
-        setPercentRead(
-          Math.floor(
-            (100 / (e.target.scrollHeight - coverPxEnd)) * VISIBLE_END_PX
-          )
-        );
+          const VISIBLE_END_PX =
+            currScrollTop - coverPxEnd + e.target.clientHeight;
+          setPercentRead(
+            Math.floor(
+              (100 / (e.target.scrollHeight - coverPxEnd)) * VISIBLE_END_PX
+            )
+          );
 
-        if (currScrollTop < coverPxEnd || currScrollTop > prevScrollTop) {
-          setHideBookHeader(true);
+          if (currScrollTop < coverPxEnd || currScrollTop > prevScrollTop) {
+            setHideBookHeader(true);
+          } else {
+            setHideBookHeader(false);
+          }
+          setPrevScrollTop(currScrollTop);
         } else {
-          setHideBookHeader(false);
+          // console.log("re-enable?");
+          setBlockMainScrollFn(false);
         }
-        setPrevScrollTop(currScrollTop);
-      }, 250)}
+      }, 50)}
     >
       <BookHeader
         title={version.title}
@@ -111,6 +120,10 @@ export default function Book({
         hide={hideBookHeader}
         coverThumb={version.signedCoverUrlThumb}
         published={version.publishedAt}
+        currentChapter={currentChapterTitle}
+        setBlockMainScrollFn={setBlockMainScrollFn}
+        chapterList={chapterList}
+        setHide={setHideBookHeader}
       />
 
       <img
