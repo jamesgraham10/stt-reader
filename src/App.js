@@ -43,6 +43,7 @@ function App() {
       <Book
         version={version}
         fragments={fragments}
+        theme={bookData.theme}
         cacheLastFragScrolled={bookData.lastFragScrolled}
         setBookCache={(field, value) =>
           localStorage.setItem(

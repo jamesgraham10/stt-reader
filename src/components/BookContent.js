@@ -11,7 +11,7 @@ export default function BookContent({ fragments, theme }) {
             key={fragment.id}
             id={fragment.id}
             title={fragment.content}
-            fontSize={theme.chapterFontSize}
+            fontSize={theme.fontSize}
           />
         );
       case "TEXT":
@@ -31,7 +31,6 @@ export default function BookContent({ fragments, theme }) {
             url={fragment.signedMediaUrl}
             caption={fragment.mediaCaption}
             fontSize={theme.fontSize}
-            lineHeight={theme.lineHeight}
           />
         );
       default:

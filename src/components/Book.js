@@ -50,6 +50,7 @@ export default function Book({
   fragments,
   setBookCache,
   cacheLastFragScrolled,
+  theme: cachedTheme,
 }) {
   const bookContainer = useRef(null);
   const [coverPxEnd, setCoverPxEnd] = useState(0);
@@ -58,9 +59,10 @@ export default function Book({
   const [hideBookHeader, setHideBookHeader] = useState(false);
   const [blockMainScrollFn, setBlockMainScrollFn] = useState(false);
   const [percentRead, setPercentRead] = useState(0);
-  const [chapterList, setChapterList] = useState(
-    fragments.filter((f) => f.type === "CHAPTER")
+  const [theme, setTheme] = useState(
+    cachedTheme || { fontClassification: "SERIF", fontSize: "NORMAL" }
   );
+  const [chapterList] = useState(fragments.filter((f) => f.type === "CHAPTER"));
   const [currentChapterTitle, setCurrentChapterTitle] = useState("");
 
   useEffect(() => {
@@ -72,9 +74,9 @@ export default function Book({
       setCoverPxEnd(cover.offsetTop + cover.clientHeight);
 
       if (frag) {
-        // bookContainer.current.scrollTo({
-        //   top: frag.offsetTop,
-        // });
+        bookContainer.current.scrollTo({
+          top: frag.offsetTop,
+        });
       }
     }
   }, [bookContainer, cacheLastFragScrolled]);
@@ -124,6 +126,12 @@ export default function Book({
         setBlockMainScrollFn={setBlockMainScrollFn}
         chapterList={chapterList}
         setHide={setHideBookHeader}
+        theme={theme}
+        setTheme={(field, value) => {
+          const newTheme = { ...theme, [field]: value };
+          setTheme(newTheme);
+          setBookCache("theme", newTheme);
+        }}
       />
 
       <img
@@ -135,8 +143,8 @@ export default function Book({
         }}
       />
 
-      <BookWrapper theme={version.theme}>
-        <BookContent fragments={fragments} theme={version.theme} />
+      <BookWrapper theme={theme}>
+        <BookContent fragments={fragments} theme={theme} />
       </BookWrapper>
 
       <BookFooter
