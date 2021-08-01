@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 
 import { checkBookCache } from "./api";
 import AuthenticateForm from "./components/AuthenticateForm";
-import BookHeader from "./components/BookHeader";
-import BookWrapper from "./components/BookWrapper";
-import BookContent from "./components/BookContent";
+import Book from "./components/Book";
 
 function App() {
   const [publicHandle] = window.location.pathname.replace("/", "").split("/");
@@ -42,12 +40,17 @@ function App() {
   // If so, show a message to the user to see if they want to reload.
   return (
     init && (
-      <>
-        <BookHeader title={version.title} author={version.author} />
-        <BookWrapper theme={version.theme}>
-          <BookContent fragments={fragments} theme={version.theme} />
-        </BookWrapper>
-      </>
+      <Book
+        version={version}
+        fragments={fragments}
+        cacheLastFragScrolled={bookData.lastFragScrolled}
+        setBookCache={(field, value) =>
+          localStorage.setItem(
+            publicHandle,
+            JSON.stringify({ ...bookData, [field]: value })
+          )
+        }
+      />
     )
   );
 }

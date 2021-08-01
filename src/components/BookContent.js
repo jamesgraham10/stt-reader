@@ -9,6 +9,7 @@ export default function BookContent({ fragments, theme }) {
         return (
           <Chapter
             key={fragment.id}
+            id={fragment.id}
             title={fragment.content}
             fontSize={theme.chapterFontSize}
           />
@@ -17,6 +18,7 @@ export default function BookContent({ fragments, theme }) {
         return (
           <Paragraph
             key={fragment.id}
+            id={fragment.id}
             content={fragment.content}
             fontSize={theme.fontSize}
           />
@@ -25,9 +27,11 @@ export default function BookContent({ fragments, theme }) {
         return (
           <Photo
             key={fragment.id}
-            url={fragment.mediaUrl}
+            id={fragment.id}
+            url={fragment.signedMediaUrl}
             caption={fragment.mediaCaption}
             fontSize={theme.fontSize}
+            lineHeight={theme.lineHeight}
           />
         );
       default:

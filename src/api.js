@@ -11,7 +11,7 @@ export function checkBookCache(publicHandle = null) {
   return null;
 }
 
-function getSignedBookDataUrl(publicHandle, password) {
+function getSignedBookData(publicHandle, password) {
   return axios.post(
     "http://localhost:8001/.netlify/functions/actions/public/stt/read",
     {
@@ -21,20 +21,11 @@ function getSignedBookDataUrl(publicHandle, password) {
   );
 }
 
-function getBookData(bookDataUrl) {
-  return axios.get(bookDataUrl, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-}
-
 export async function authenticate(publicHandle, password) {
-  const { data: signedResponse } = await getSignedBookDataUrl(
+  const { data: bookDataResponse } = await getSignedBookData(
     publicHandle,
     password
   );
-  const { data: bookDataResponse } = await getBookData(signedResponse.dataUrl);
   const bookData = {
     password,
     data: bookDataResponse,
