@@ -11,26 +11,29 @@ export function checkBookCache(publicHandle = null) {
   return null;
 }
 
-function getSignedBookData(publicHandle, password) {
+function getSignedBookData(token, email) {
   return axios.post(
     "http://localhost:8001/.netlify/functions/actions/public/stt/read",
     {
-      publicHandle,
-      password,
+      token,
+      email,
     }
   );
 }
 
-export async function authenticate(publicHandle, password) {
-  const { data: bookDataResponse } = await getSignedBookData(
-    publicHandle,
-    password
-  );
+export async function authenticate(token, email) {
+  const { data: bookDataResponse } = await getSignedBookData(token, email);
   const bookData = {
-    password,
+    email,
     data: bookDataResponse,
   };
   // // Cache book data in local storage
-  localStorage.setItem(publicHandle, JSON.stringify(bookData));
+  localStorage.setItem(token, JSON.stringify(bookData));
   return bookData;
+}
+
+export function getBookInfo(token) {
+  return axios.get(
+    `http://localhost:8001/.netlify/functions/actions/public/stt/bookInfo?token=${token}`
+  );
 }

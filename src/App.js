@@ -5,11 +5,12 @@ import AuthenticateForm from "./components/AuthenticateForm";
 import Book from "./components/Book";
 
 function App() {
-  const [publicHandle] = window.location.pathname.replace("/", "").split("/");
-  const [bookData, setBookData] = useState(checkBookCache(publicHandle));
+  const [token] = window.location.pathname.replace("/", "").split("/");
+  const [bookData, setBookData] = useState(checkBookCache(token));
   const [init, setInit] = useState(false);
   const [version, setVersion] = useState(null);
   const [fragments, setFragments] = useState(null);
+  const [noBookFound, setNoBookFound] = useState(false);
 
   useEffect(() => {
     if (bookData) {
@@ -19,17 +20,24 @@ function App() {
     }
   }, [bookData]);
 
-  if (!publicHandle) {
+  if (!token) {
     // Redirect to landing page, or show a message saying 404
-    return (window.location = process.env.REACT_APP_HOME_URL);
+    console.log("show stories to tell promo...");
+    return <div>No token. But go to stories to tell homepage and sign up!</div>;
   }
+
+  if (noBookFound) {
+    return <div>Nothing was found</div>;
+  }
+
   if (!bookData) {
     // There is no data. Time to authenticate with the password
     return (
       <>
         <AuthenticateForm
-          publicHandle={publicHandle}
+          token={token}
           setBookData={setBookData}
+          setNoneFound={setNoBookFound}
         />
       </>
     );
@@ -47,7 +55,7 @@ function App() {
         cacheLastFragScrolled={bookData.lastFragScrolled}
         setBookCache={(field, value) =>
           localStorage.setItem(
-            publicHandle,
+            token,
             JSON.stringify({ ...bookData, [field]: value })
           )
         }
