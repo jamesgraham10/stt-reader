@@ -13,7 +13,7 @@ export default function Paragraph({ content, fontSize, id }) {
   return (
     <p
       data-fragment-id={id}
-      className={`mb-6 ${getParagraphFontSize(fontSize)}`}
+      className={`${getParagraphFontSize(fontSize)}`}
       style={{ marginBottom: "2em" }}
     >
       {content}

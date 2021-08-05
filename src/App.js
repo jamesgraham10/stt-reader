@@ -1,24 +1,42 @@
 import { useState, useEffect } from "react";
 
-import { checkBookCache } from "./api";
+import { checkBookCache, getBookInfo } from "./api";
 import AuthenticateForm from "./components/AuthenticateForm";
 import Book from "./components/Book";
+
+function bookHasExpired(expirySeconds) {
+  const ONE_HOUR_PRE_EXPIRY = expirySeconds - 3600;
+  const NOW = Date.now() / 1000;
+  return NOW >= ONE_HOUR_PRE_EXPIRY;
+}
 
 function App() {
   const [token] = window.location.pathname.replace("/", "").split("/");
   const [bookData, setBookData] = useState(checkBookCache(token));
-  const [init, setInit] = useState(false);
-  const [version, setVersion] = useState(null);
-  const [fragments, setFragments] = useState(null);
   const [noBookFound, setNoBookFound] = useState(false);
 
   useEffect(() => {
+    // Check book status
     if (bookData) {
-      setVersion(bookData.data.stt_version[0]);
-      setFragments(bookData.data.stt_fragment);
-      setInit(true);
+      getBookInfo(token).then(({ data }) => {
+        if (
+          data.privacyStatus === "PRIVATE" &&
+          // Previously logged in as public
+          bookData.version.privacyStatus !== "PRIVATE"
+        ) {
+          localStorage.removeItem(token);
+          setBookData(null);
+        }
+      });
     }
   }, [bookData]);
+
+  function setBookCache(field, value) {
+    localStorage.setItem(
+      token,
+      JSON.stringify({ ...bookData, [field]: value })
+    );
+  }
 
   if (!token) {
     // Redirect to landing page, or show a message saying 404
@@ -30,14 +48,15 @@ function App() {
     return <div>Nothing was found</div>;
   }
 
-  if (!bookData) {
-    // There is no data. Time to authenticate with the password
+  if (!bookData || bookHasExpired(bookData.expires)) {
+    // No data or book expired. Time to authenticate
     return (
       <>
         <AuthenticateForm
           token={token}
           setBookData={setBookData}
           setNoneFound={setNoBookFound}
+          setBookCache={setBookCache}
         />
       </>
     );
@@ -47,18 +66,15 @@ function App() {
   // Then call the endpoint again to see if there's a newer version of the book available
   // If so, show a message to the user to see if they want to reload.
   return (
-    init && (
+    bookData && (
       <Book
-        version={version}
-        fragments={fragments}
-        theme={bookData.theme}
-        cacheLastFragScrolled={bookData.lastFragScrolled}
-        setBookCache={(field, value) =>
-          localStorage.setItem(
-            token,
-            JSON.stringify({ ...bookData, [field]: value })
-          )
+        version={bookData.version}
+        fragments={bookData.fragments}
+        theme={
+          bookData.theme || { fontClassification: "SERIF", fontSize: "NORMAL" }
         }
+        cacheLastFragScrolled={bookData.lastFragScrolled}
+        setBookCache={setBookCache}
       />
     )
   );

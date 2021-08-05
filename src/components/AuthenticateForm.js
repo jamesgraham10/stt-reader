@@ -50,7 +50,11 @@ export default function AuthenticateForm({ setBookData, token, setNoneFound }) {
             onSubmit={async (e) => {
               e.preventDefault();
               try {
-                const bookData = await authenticate(token, email);
+                const bookData = await authenticate(
+                  token,
+                  email,
+                  bookInfo.privacyStatus
+                );
                 setBookData(bookData);
               } catch (err) {
                 console.log("err", err);
