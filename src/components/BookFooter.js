@@ -1,4 +1,4 @@
-export default function ({ currentChapter, percentRead, hide }) {
+export default function BookFooter({ currentChapter, percentRead, hide }) {
   return (
     <div
       className={`duration-500 transition-all fixed left-0 w-full bg-white border-t ${

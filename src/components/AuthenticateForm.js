@@ -17,7 +17,7 @@ export default function AuthenticateForm({ setBookData, token, setNoneFound }) {
       .catch(() => {
         setNoneFound(true);
       });
-  }, []);
+  }, [setNoneFound, token]);
 
   useEffect(() => {
     if (authAttempts) {
@@ -31,6 +31,7 @@ export default function AuthenticateForm({ setBookData, token, setNoneFound }) {
         <div className="max-w-md w-96 shadow bg-white p-4 rounded-lg">
           <div className="flex">
             <img
+              alt="Book cover"
               className="shadow"
               src={bookInfo.coverUrlThumb}
               style={{ height: "150px" }}

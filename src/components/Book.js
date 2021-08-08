@@ -135,6 +135,7 @@ export default function Book({
       />
 
       <img
+        alt="Book cover"
         src={version.signedCoverUrl}
         className="cover-image mx-auto"
         style={{

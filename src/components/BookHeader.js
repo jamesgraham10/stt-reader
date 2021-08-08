@@ -5,7 +5,10 @@ import AppearanceLabel from "./AppearanceLabel";
 
 function StyleSettings({ setShowStyleSettings, setTheme, theme }) {
   const styleMenu = useRef(null);
-  const onClickOutside = useCallback(() => setShowStyleSettings(false), []);
+  const onClickOutside = useCallback(
+    () => setShowStyleSettings(false),
+    [setShowStyleSettings]
+  );
   useClickOutside(styleMenu, onClickOutside);
 
   return (
@@ -76,7 +79,10 @@ function StyleSettings({ setShowStyleSettings, setTheme, theme }) {
 
 function ChapterNav({ chapterList, onSelectChapter }) {
   const chapterMenu = useRef(null);
-  const onClickOutside = useCallback(() => onSelectChapter(false), []);
+  const onClickOutside = useCallback(
+    () => onSelectChapter(false),
+    [onSelectChapter]
+  );
   useClickOutside(chapterMenu, onClickOutside);
 
   function scrollToChapter(chapterId) {
@@ -136,7 +142,12 @@ export default function BookHeader({
     >
       <div className="flex justify-between mx-auto max-w-3xl p-4">
         <div className="flex ">
-          <img className="shadow" src={coverThumb} style={{ height: "75px" }} />
+          <img
+            alt="Book cover"
+            className="shadow"
+            src={coverThumb}
+            style={{ height: "75px" }}
+          />
           <div className="ml-4 flex flex-col justify-between">
             <div>
               <h1 className="font-medium text-lg">

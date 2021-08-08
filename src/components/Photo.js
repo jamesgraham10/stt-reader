@@ -6,6 +6,8 @@ function getCaptionFontSize(fontSize) {
       return "text-lg";
     case "LARGE":
       return "text-xl";
+    default:
+      return "";
   }
 }
 

@@ -6,6 +6,8 @@ function getParagraphFontSize(fontSize) {
       return "text-lg";
     case "LARGE":
       return "text-xl";
+    default:
+      return "";
   }
 }
 

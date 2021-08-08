@@ -29,7 +29,7 @@ function App() {
         }
       });
     }
-  }, [bookData]);
+  }, [bookData, token]);
 
   function setBookCache(field, value) {
     localStorage.setItem(

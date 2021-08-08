@@ -4,6 +4,8 @@ function getFontFamily(classification) {
       return "Source Serif Pro";
     case "SANS":
       return "Source Sans Pro";
+    default:
+      return "";
   }
 }
 

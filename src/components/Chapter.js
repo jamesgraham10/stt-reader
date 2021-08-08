@@ -6,6 +6,8 @@ function getChapterFontSize(fontSize) {
       return "text-3xl";
     case "LARGE":
       return "text-4xl";
+    default:
+      return "";
   }
 }
 
