@@ -39,7 +39,7 @@ function App() {
   }
 
   if (!token) {
-    // Redirect to landing page, or show a message saying 404
+    // Redirect to landing page or show a message saying 404
     console.log("show stories to tell promo...");
     return <div>No token. But go to stories to tell homepage and sign up!</div>;
   }
