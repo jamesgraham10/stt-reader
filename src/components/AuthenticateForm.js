@@ -1,23 +1,9 @@
 import { useState, useEffect } from "react";
-import { authenticate, getBookInfo } from "../api";
+import { authenticate } from "../api";
 
-export default function AuthenticateForm({ setBookData, token, setNoneFound }) {
+export default function AuthenticateForm({ bookInfo, setBookData, token }) {
   const [email, setEmail] = useState("");
   const [authAttempts, setAuthAttempts] = useState(0);
-  const [bookInfo, setBookInfo] = useState(null);
-
-  useEffect(() => {
-    getBookInfo(token)
-      .then((response) => {
-        if (response.data) {
-          setBookInfo(response.data);
-          setNoneFound(false);
-        }
-      })
-      .catch(() => {
-        setNoneFound(true);
-      });
-  }, [setNoneFound, token]);
 
   useEffect(() => {
     if (authAttempts) {

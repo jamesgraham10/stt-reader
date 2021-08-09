@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import { checkBookCache, getBookInfo } from "./api";
 import AuthenticateForm from "./components/AuthenticateForm";
 import Book from "./components/Book";
@@ -14,10 +13,11 @@ function App() {
   const [token] = window.location.pathname.replace("/", "").split("/");
   const [bookData, setBookData] = useState(checkBookCache(token));
   const [noBookFound, setNoBookFound] = useState(false);
+  const [bookInfo, setBookInfo] = useState(null);
 
   useEffect(() => {
     // Check book status
-    if (bookData) {
+    if (token) {
       getBookInfo(token)
         .then(({ data }) => {
           if (
@@ -27,16 +27,17 @@ function App() {
           ) {
             localStorage.removeItem(token);
             setBookData(null);
+          } else {
+            setBookInfo(data);
           }
         })
-        .catch(({ response: { data } }) => {
-          if (data && data.message === "NO_TOKEN_EXISTS") {
-            localStorage.removeItem(token);
-            setBookData(null);
-          }
+        .catch(() => {
+          localStorage.removeItem(token);
+          setBookData(null);
+          setNoBookFound(true);
         });
     }
-  }, [bookData, token]);
+  }, [token]);
 
   function setBookCache(field, value) {
     localStorage.setItem(
@@ -60,10 +61,9 @@ function App() {
     return (
       <>
         <AuthenticateForm
+          bookInfo={bookInfo}
           token={token}
           setBookData={setBookData}
-          setNoneFound={setNoBookFound}
-          setBookCache={setBookCache}
         />
       </>
     );
