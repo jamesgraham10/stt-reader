@@ -37,7 +37,7 @@ function App() {
           setNoBookFound(true);
         });
     }
-  }, [token]);
+  }, [token, bookData.version.privacyStatus]);
 
   function setBookCache(field, value) {
     localStorage.setItem(
