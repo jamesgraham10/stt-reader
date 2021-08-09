@@ -18,16 +18,23 @@ function App() {
   useEffect(() => {
     // Check book status
     if (bookData) {
-      getBookInfo(token).then(({ data }) => {
-        if (
-          data.privacyStatus === "PRIVATE" &&
-          // Previously logged in as public
-          bookData.version.privacyStatus !== "PRIVATE"
-        ) {
-          localStorage.removeItem(token);
-          setBookData(null);
-        }
-      });
+      getBookInfo(token)
+        .then(({ data }) => {
+          if (
+            data.privacyStatus === "PRIVATE" &&
+            // Previously logged in as public
+            bookData.version.privacyStatus !== "PRIVATE"
+          ) {
+            localStorage.removeItem(token);
+            setBookData(null);
+          }
+        })
+        .catch(({ response: { data } }) => {
+          if (data && data.message === "NO_TOKEN_EXISTS") {
+            localStorage.removeItem(token);
+            setBookData(null);
+          }
+        });
     }
   }, [bookData, token]);
 
