@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
 import { authenticate } from "../api";
 
-export default function AuthenticateForm({ bookInfo, setBookData, token }) {
+export default function AuthenticateForm({
+  publicHandle,
+  bookInfo,
+  setBookData,
+}) {
   const [email, setEmail] = useState("");
+  const [loginToken, setLoginToken] = useState("");
   const [authAttempts, setAuthAttempts] = useState(0);
 
   useEffect(() => {
@@ -38,7 +43,8 @@ export default function AuthenticateForm({ bookInfo, setBookData, token }) {
               e.preventDefault();
               try {
                 const bookData = await authenticate(
-                  token,
+                  publicHandle,
+                  loginToken,
                   email,
                   bookInfo.privacyStatus
                 );
@@ -64,8 +70,16 @@ export default function AuthenticateForm({ bookInfo, setBookData, token }) {
                   type="email"
                   className="w-full p-2 bg-gray-50 rounded mt-2 mb-4 text-lg"
                   value={email}
-                  placeholder="Enter your email to continue"
+                  placeholder="Enter your email"
                   onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+                <input
+                  type="text"
+                  className="w-full p-2 bg-gray-50 rounded mt-2 mb-4 text-lg"
+                  value={loginToken}
+                  placeholder="Enter your login token"
+                  onChange={(e) => setLoginToken(e.target.value)}
                   required
                 />
               </>

@@ -11,15 +11,20 @@ export function checkBookCache(publicHandle = null) {
   return null;
 }
 
-function getSignedBookData(token, email) {
+function getSignedBookData(handle, token, email) {
   return axios.post(`${process.env.REACT_APP_ACTIONS_URL}/read`, {
+    handle,
     token,
     email,
   });
 }
 
-export async function authenticate(token, email) {
-  const { data: bookDataResponse } = await getSignedBookData(token, email);
+export async function authenticate(handle, token, email) {
+  const { data: bookDataResponse } = await getSignedBookData(
+    handle,
+    token,
+    email
+  );
   const bookData = {
     email,
     ...bookDataResponse,
@@ -29,8 +34,8 @@ export async function authenticate(token, email) {
   return bookData;
 }
 
-export function getBookInfo(token) {
+export function getBookInfo(handle) {
   return axios.get(
-    `${process.env.REACT_APP_ACTIONS_URL}/bookInfo?token=${token}`
+    `${process.env.REACT_APP_ACTIONS_URL}/bookInfo?handle=${handle}`
   );
 }
