@@ -19,7 +19,7 @@ function getSignedBookData(handle, token, email) {
   });
 }
 
-export async function authenticate(handle, token, email) {
+export async function authenticate(handle, token = null, email = null) {
   const { data: bookDataResponse } = await getSignedBookData(
     handle,
     token,
@@ -27,10 +27,12 @@ export async function authenticate(handle, token, email) {
   );
   const bookData = {
     email,
+    token,
+    handle,
     ...bookDataResponse,
   };
   // // Cache book data in local storage
-  localStorage.setItem(token, JSON.stringify(bookData));
+  localStorage.setItem(handle, JSON.stringify(bookData));
   return bookData;
 }
 

@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { checkBookCache, getBookInfo } from "./api";
-import AuthenticateForm from "./components/AuthenticateForm";
+
 import Book from "./components/Book";
+import WelcomeScreen from "./components/WelcomeScreen";
 
 function bookHasExpired(expirySeconds) {
   const ONE_HOUR_PRE_EXPIRY = expirySeconds - 3600;
@@ -14,29 +15,55 @@ function App() {
   const [bookData, setBookData] = useState(checkBookCache(publicHandle));
   const [noBookFound, setNoBookFound] = useState(false);
   const [bookInfo, setBookInfo] = useState(null);
+  const [isReading, setIsReading] = useState(false);
+  const [hasAuth, setHasAuth] = useState(false);
+  const [newVersionAvailable, setNewVersionAvailable] = useState(false);
+  const [gettingInfo, setGettingInfo] = useState(true);
 
   useEffect(() => {
-    // Check book status
     if (publicHandle) {
+      setGettingInfo(true);
       getBookInfo(publicHandle)
         .then(({ data }) => {
-          if (
-            data.privacyStatus === "PRIVATE" &&
-            // Previously logged in as public
+          const isPrivate = data.privacyStatus === "PRIVATE";
+          const privacyStatusChanged =
+            isPrivate &&
             bookData &&
-            bookData.version.privacyStatus !== "PRIVATE"
-          ) {
+            bookData.version.privacyStatus !== "PRIVATE";
+          const bookOffline = !data.bookOnline;
+          const newVersionAvailable =
+            bookData && data.version !== bookData.version.version;
+          const bookExpired = bookData && bookHasExpired(bookData.expires);
+          if (privacyStatusChanged || bookOffline || bookExpired) {
             localStorage.removeItem(publicHandle);
             setBookData(null);
+            setHasAuth(false);
+          } else if (bookData || !isPrivate) {
+            setHasAuth(true);
+            setNewVersionAvailable(newVersionAvailable);
+          } else {
+            setNoBookFound(false);
+          }
+
+          if (bookOffline) {
+            setBookInfo(null);
+            setNoBookFound(true);
           } else {
             setBookInfo(data);
           }
+
+          setGettingInfo(false);
         })
-        .catch(() => {
+        .catch((e) => {
+          console.log("catch", e);
           localStorage.removeItem(publicHandle);
           setBookData(null);
           setNoBookFound(true);
+          setGettingInfo(false);
         });
+    } else {
+      setGettingInfo(false);
+      setNoBookFound(true);
     }
   }, [publicHandle]);
 
@@ -47,37 +74,34 @@ function App() {
     );
   }
 
-  if (!publicHandle) {
-    // Redirect to landing page or show a message saying 404
-    console.log("show stories to tell promo...");
+  function getWelcomeStatus() {
+    if (!publicHandle) {
+      return "NO_HANDLE";
+    } else if (noBookFound) {
+      return "NOTHING_FOUND";
+    } else if (!hasAuth) {
+      return "AUTHENTICATE";
+    } else {
+      return "START_READING";
+    }
+  }
+
+  if (!isReading) {
     return (
-      <div>
-        No publicHandle. But go to stories to tell homepage and sign up!
-      </div>
+      <WelcomeScreen
+        gettingInfo={gettingInfo}
+        status={getWelcomeStatus()}
+        setHasAuth={setHasAuth}
+        bookInfo={bookInfo}
+        bookData={bookData}
+        publicHandle={publicHandle}
+        setBookData={setBookData}
+        newVersionAvailable={newVersionAvailable}
+        setIsReading={setIsReading}
+      />
     );
   }
 
-  if (noBookFound) {
-    return <div>Nothing was found</div>;
-  }
-
-  if (!bookData || bookHasExpired(bookData.expires)) {
-    // No data or book expired. Time to authenticate
-    return (
-      <>
-        <AuthenticateForm
-          publicHandle={publicHandle}
-          bookInfo={bookInfo}
-          publicHandle={publicHandle}
-          setBookData={setBookData}
-        />
-      </>
-    );
-  }
-
-  // TODO we got the new data from storage. Cool, so show the book.
-  // Then call the endpoint again to see if there's a newer version of the book available
-  // If so, show a message to the user to see if they want to reload.
   return (
     bookData && (
       <Book

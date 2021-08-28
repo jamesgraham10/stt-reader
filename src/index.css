@@ -1,5 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
+  font-family: futura-pt, "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+    sans-serif;
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.brand {
+  font-family: professor, sans-serif;
+}
+
+.input {
+  @apply outline-none bg-offWhite border-transparent border-2 rounded w-full transition duration-200 ease-in py-1.5 px-2 text-base my-2 md:text-lg;
 }

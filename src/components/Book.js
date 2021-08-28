@@ -56,7 +56,7 @@ export default function Book({
   const [coverPxEnd, setCoverPxEnd] = useState(0);
   const [prevScrollTop, setPrevScrollTop] = useState(0);
   const [beyondCover, setBeyondCover] = useState(false);
-  const [hideBookHeader, setHideBookHeader] = useState(false);
+  const [hideBookHeader, setHideBookHeader] = useState(true);
   const [blockMainScrollFn, setBlockMainScrollFn] = useState(false);
   const [percentRead, setPercentRead] = useState(0);
   const [theme, setTheme] = useState(
@@ -75,7 +75,8 @@ export default function Book({
 
       if (frag) {
         bookContainer.current.scrollTo({
-          top: frag.offsetTop,
+          top: frag.offsetTop - 20,
+          behavior: "smooth",
         });
       }
     }
@@ -85,7 +86,11 @@ export default function Book({
     <div
       ref={bookContainer}
       id="book"
-      className="overflow-scroll max-h-screen"
+      className="overflow-scroll"
+      style={{
+        height: "100vh",
+        height: "calc(var(--vh, 1vh) * 100)",
+      }}
       onScroll={debounce((e) => {
         if (!blockMainScrollFn) {
           const currScrollTop = e.target.scrollTop;

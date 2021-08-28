@@ -1,7 +1,7 @@
 export default function BookFooter({ currentChapter, percentRead, hide }) {
   return (
     <div
-      className={`duration-500 transition-all fixed left-0 w-full bg-white border-t ${
+      className={`duration-500 transition-all fixed left-0 w-full bg-white border-lightGray border-t ${
         hide ? "-bottom-12" : "bottom-0 opacity-1"
       }`}
     >

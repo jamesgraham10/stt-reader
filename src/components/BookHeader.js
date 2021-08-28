@@ -1,4 +1,4 @@
-import { useRef, useCallback, useState } from "react";
+import { useRef, useCallback, useState, useEffect } from "react";
 import useClickOutside from "../hooks/useClickOutside";
 import AppearanceButton from "./AppearanceButton";
 import AppearanceLabel from "./AppearanceLabel";
@@ -14,7 +14,7 @@ function StyleSettings({ setShowStyleSettings, setTheme, theme }) {
   return (
     <div
       ref={styleMenu}
-      className="absolute right-0 top-12 bg-white border border-gray-100 rounded z-40 p-2 px-3"
+      className="absolute right-0 top-12 bg-white border border-lightGray rounded z-40 p-2 px-3"
     >
       <div className="flex justify-between items-center my-4">
         <AppearanceLabel label="Font" />
@@ -91,14 +91,14 @@ function ChapterNav({ chapterList, onSelectChapter }) {
       `[data-chapter-id="${chapterId}"]`
     );
     scrollContainer.scrollTo({
-      top: chapterEl.offsetTop,
+      top: chapterEl.offsetTop - 50,
       behavior: "smooth",
     });
   }
   return (
     <ul
       ref={chapterMenu}
-      className="absolute right-0 top-12 bg-white border border-gray-100 rounded w-48 text-right z-40"
+      className="overflow-hidden absolute right-0 top-12 bg-white border border-lightGray rounded text-right z-40"
     >
       {chapterList.map((c, i) => {
         return (
@@ -108,7 +108,7 @@ function ChapterNav({ chapterList, onSelectChapter }) {
               onSelectChapter(true);
               scrollToChapter(c.id);
             }}
-            className={`cursor-pointer hover:bg-gray-50  px-4 py-3`}
+            className={`cursor-pointer hover:bg-lightestGray whitespace-nowrap  px-4 py-3`}
           >
             Chapter {i + 1}: {c.content}
           </li>
@@ -133,6 +133,13 @@ export default function BookHeader({
 }) {
   const [showChapterNav, setShowChapterNav] = useState(false);
   const [showStyleSettings, setShowStyleSettings] = useState(false);
+
+  useEffect(() => {
+    if (hide) {
+      setShowChapterNav(false);
+      setShowStyleSettings(false);
+    }
+  }, [hide]);
 
   return (
     <div
@@ -160,7 +167,7 @@ export default function BookHeader({
         </div>
         <div className="flex relative">
           <span
-            className={`cursor-pointer relative hover:bg-gray-50 p-1.5 h-10 rounded`}
+            className={`cursor-pointer relative hover:lightestGray p-1.5 h-10 rounded`}
             onClick={() => setShowStyleSettings(!showStyleSettings)}
           >
             <span className="text-lg">
@@ -177,7 +184,7 @@ export default function BookHeader({
           </span>
 
           <span
-            className={`cursor-pointer relative hover:bg-gray-50 p-1.5 h-10 rounded`}
+            className={`cursor-pointer relative hover:lightestGray p-1.5 h-10 rounded`}
             onClick={() => setShowChapterNav(!showChapterNav)}
           >
             <span className="text-lg">
