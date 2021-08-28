@@ -1,6 +1,6 @@
 export default function BookSummary({ bookInfo, loading }) {
   return bookInfo || loading ? (
-    <div className="mb-4 md:mb-0 justify-center flex">
+    <div className="justify-center flex">
       {loading ? (
         <div
           className="bg-lightGray rounded animate-pulse"

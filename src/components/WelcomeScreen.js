@@ -32,7 +32,7 @@ export default function WelcomeScreen({
       case "START_READING":
         return (
           <StartReadingButton
-            css="mt-4"
+            css="mt-2"
             text={bookData ? "Continue reading" : null}
             loading={gettingBook}
             action={async () => {
@@ -88,9 +88,9 @@ export default function WelcomeScreen({
 
         {gettingInfo ? (
           <StartReadingButton
+            css="mt-2"
             loading={true}
             text="Fetching book..."
-            css="mt-4"
           />
         ) : (
           renderBottom()
