@@ -147,7 +147,7 @@ export default function BookHeader({
         hide ? "-top-32" : "top-0 opacity-1"
       } transition-all duration-500`}
     >
-      <div className="flex justify-between mx-auto max-w-3xl p-4">
+      <div className="flex justify-between mx-auto max-w-3xl px-4 py-2 md:py-4">
         <div className="flex ">
           <img
             alt="Book cover"
