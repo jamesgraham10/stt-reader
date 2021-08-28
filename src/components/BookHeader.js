@@ -160,7 +160,9 @@ export default function BookHeader({
               <h1 className="font-medium text-lg">
                 {title}
                 <br />
-                <span className="font-normal"> by {author}</span>
+                <span className="font-normal whitespace-nowrap">
+                  by {author}
+                </span>
               </h1>
             </div>
           </div>
