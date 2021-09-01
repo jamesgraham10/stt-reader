@@ -17,7 +17,6 @@ function App() {
   const [bookInfo, setBookInfo] = useState(null);
   const [isReading, setIsReading] = useState(false);
   const [hasAuth, setHasAuth] = useState(false);
-  const [newVersionAvailable, setNewVersionAvailable] = useState(false);
   const [gettingInfo, setGettingInfo] = useState(true);
 
   useEffect(() => {
@@ -26,24 +25,25 @@ function App() {
       getBookInfo(publicHandle)
         .then(({ data }) => {
           const isPrivate = data.privacyStatus === "PRIVATE";
-          const privacyStatusChanged =
+          const bookMadePrivate =
             isPrivate &&
             bookData &&
             bookData.version.privacyStatus !== "PRIVATE";
           const bookOffline = !data.bookOnline;
-          const newVersionAvailable =
+          const publishedVersionMismatch =
             bookData && data.version !== bookData.version.version;
           const bookExpired = bookData && bookHasExpired(bookData.expires);
-          if (privacyStatusChanged || bookOffline || bookExpired) {
+
+          if (
+            bookOffline ||
+            bookExpired ||
+            publishedVersionMismatch ||
+            bookMadePrivate
+          ) {
             localStorage.removeItem(publicHandle);
             setBookData(null);
-            setHasAuth(false);
-          } else if (bookData || !isPrivate) {
-            setHasAuth(true);
-            setNewVersionAvailable(newVersionAvailable);
-          } else {
-            setNoBookFound(false);
           }
+          setHasAuth(!isPrivate);
 
           if (bookOffline) {
             setBookInfo(null);
@@ -96,7 +96,6 @@ function App() {
         bookData={bookData}
         publicHandle={publicHandle}
         setBookData={setBookData}
-        newVersionAvailable={newVersionAvailable}
         setIsReading={setIsReading}
       />
     );

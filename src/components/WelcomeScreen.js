@@ -76,6 +76,7 @@ export default function WelcomeScreen({
           <BookSummary loading={gettingInfo} bookInfo={bookInfo} />
           {!gettingInfo && status === "AUTHENTICATE" && (
             <AuthenticateForm
+              savedAuth={{ email: bookData?.email, token: bookData?.token }}
               publicHandle={publicHandle}
               bookInfo={bookInfo}
               publicHandle={publicHandle}

@@ -9,11 +9,12 @@ export default function AuthenticateForm({
   setBookData,
   setHasAuth,
   setIsReading,
+  savedAuth,
 }) {
   const [err, setErr] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [loginToken, setLoginToken] = useState("");
+  const [email, setEmail] = useState(savedAuth.email || "");
+  const [loginToken, setLoginToken] = useState(savedAuth.token || "");
   const [authAttempts, setAuthAttempts] = useState(0);
 
   useEffect(() => {
@@ -70,7 +71,7 @@ export default function AuthenticateForm({
           }}
         />
         <input
-          type="text"
+          type="password"
           className="input"
           value={loginToken}
           placeholder="Enter your login token"
