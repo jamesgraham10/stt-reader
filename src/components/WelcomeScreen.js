@@ -7,12 +7,16 @@ import { authenticate } from "../api";
 
 function Slogan() {
   return (
-    <div className="mb-2 md:mb-6">
+    <a
+      className="mb-2 md:mb-6"
+      href={process.env.REACT_APP_HOME_URL}
+      title="Go to homepage"
+    >
       <h1 className="brand text-4xl">Stories To Tell</h1>
       <p className="text-sm text-gray">
         The easiest way to write your life story
       </p>
-    </div>
+    </a>
   );
 }
 
