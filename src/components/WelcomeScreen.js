@@ -13,8 +13,8 @@ function Slogan() {
       title="Go to homepage"
     >
       <h1 className="brand text-4xl">Stories To Tell</h1>
-      <p className="text-sm text-gray">
-        The easiest way to write your life story
+      <p className="text-sm text-gray mb-4">
+        The easy way to write your life story
       </p>
     </a>
   );
